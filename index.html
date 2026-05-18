@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Quiz – Ronde de sécurité | Défectuosités</title>
+<style>
+:root {
+  --rouge:    #C0392B;
+  --rouge-f:  #96281B;
+  --rouge-p:  #FDEDEC;
+  --teal:     #0E7C7B;
+  --teal-f:   #085C5B;
+  --teal-p:   #E8F6F5;
+  --bleu-f:   #1C2A3A;
+  --gris:     #4A4A4A;
+  --gris-l:   #E8EAED;
+  --gris-b:   #D0D0D0;
+  --blanc:    #FFFFFF;
+  --jaune:    #E6B800;
+  /* --bleu-btn: #2980B9; DÉSACTIVÉ */
+  --vert-btn: #27A060;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--gris-l);
+  color: #1A1A1A;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── WRAPPER GLOBAL ── */
+.page-wrap {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+  width: 100%;
+  background: var(--bleu-f);
+  border-bottom: 3px solid var(--rouge);
+}
+.header-top {
+  padding: 12px 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.header-title h1 {
+  color: #fff;
+  font-size: clamp(14px, 3vw, 20px);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.header-title h1 span { color: var(--rouge); }
+.header-title .sub {
+  color: rgba(255,255,255,0.5);
+  font-size: clamp(10px, 2vw, 12px);
+  margin-top: 2px;
+  display: block;
+}
+.header-badge {
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.7);
+  font-size: clamp(9px, 1.8vw, 11px);
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.header-filters {
+  padding: 10px 20px 0;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  background: var(--teal);
+}
+.filter-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 180px; }
+.filter-group label {
+  color: rgba(255,255,255,0.75);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.filter-group select {
+  padding: 7px 28px 7px 10px;
+  border-radius: 5px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.12) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='white'/%3E%3C/svg%3E") no-repeat right 10px center;
+  color: #fff;
+  font-size: clamp(12px, 2.5vw, 14px);
+  cursor: pointer;
+  appearance: none;
+  width: 100%;
+}
+.filter-group select option { background: var(--teal-f); color: #fff; }
+.header-stats {
+  padding: 8px 20px 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: var(--teal);
+}
+.stat-pill {
+  background: rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: clamp(11px, 2vw, 13px);
+  color: #fff;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  white-space: nowrap;
+}
+.stat-pill span { font-weight: 700; }
+.stat-pill.bon span { color: #7DCEA0; }
+.stat-pill.mal span { color: #F1948A; }
+.progress-wrap { height: 4px; background: var(--teal-f); }
+.progress-bar {
+  height: 4px;
+  background: linear-gradient(90deg, #7DCEA0, #27AE60);
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+/* ── MAIN ── */
+main {
+  flex: 1;
+  padding: 20px 16px;
+  width: 100%;
+}
+
+/* ── CARD QUESTION ── */
+.q-card {
+  background: var(--blanc);
+  border-radius: 10px;
+  border: 1px solid var(--gris-b);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  margin-bottom: 0;
+}
+.q-card-header {
+  background: var(--teal);
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.q-section-tag {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: clamp(11px, 2vw, 13px);
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.q-num { color: rgba(255,255,255,0.7); font-size: 12px; white-space: nowrap; }
+.q-body { padding: 18px 16px 16px; }
+/* q-note désactivé */
+.q-text {
+  font-size: clamp(15px, 3vw, 17px);
+  line-height: 1.65;
+  color: #1A1A1A;
+  margin-bottom: 20px;
+}
+
+/* ── BOUTONS 2x2 ── */
+.btn-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.ans-btn {
+  padding: 12px 8px;
+  border-radius: 8px;
+  border: 2.5px solid var(--gris-b);
+  background: var(--blanc);
+  font-size: clamp(12px, 2.5vw, 13px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  text-align: center;
+  line-height: 1.3;
+  min-height: 85px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.ans-btn img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  pointer-events: none;
+  background: transparent;
+}
+.ans-btn.mineure    { border-color: var(--jaune);    color: #7a6000; }
+.ans-btn.majeure    { border-color: var(--rouge);     color: var(--rouge-f); }
+.ans-btn.mecanique  { border-color: var(--bleu-btn);  color: #1a5276; }
+.ans-btn.infraction { border-color: var(--vert-btn);  color: #1a5c38; }
+
+.ans-btn.mineure:hover:not(:disabled),
+.ans-btn.mineure:active:not(:disabled)    { background: #FFFDE7; transform: translateY(-1px); }
+.ans-btn.majeure:hover:not(:disabled),
+.ans-btn.majeure:active:not(:disabled)    { background: var(--rouge-p); transform: translateY(-1px); }
+.ans-btn.mecanique:hover:not(:disabled),
+.ans-btn.mecanique:active:not(:disabled)  { background: #EAF4FD; transform: translateY(-1px); }
+.ans-btn.infraction:hover:not(:disabled),
+.ans-btn.infraction:active:not(:disabled) { background: #E9F7EF; transform: translateY(-1px); }
+
+.ans-btn.correct  { background: #D5F5E3; border-color: #27AE60; color: #1E8449; transform: none; }
+.ans-btn.wrong    { background: var(--rouge-p); border-color: var(--rouge); color: var(--rouge-f); transform: none; }
+.ans-btn.reveal   { background: #D5F5E3; border-color: #27AE60; color: #1E8449; opacity: 0.75; transform: none; }
+.ans-btn:disabled { cursor: default; }
+
+/* ── FEEDBACK ── */
+.feedback {
+  margin-top: 14px;
+  padding: 11px 14px;
+  border-radius: 8px;
+  font-size: clamp(13px, 2.5vw, 14px);
+  line-height: 1.6;
+  display: none;
+}
+.feedback.show { display: block; }
+.feedback.ok { background: #D5F5E3; border: 1px solid #27AE60; color: #1E8449; }
+.feedback.ko { background: var(--rouge-p); border: 1px solid var(--rouge); color: var(--rouge-f); }
+.feedback .code-badge {
+  display: inline-block;
+  background: rgba(0,0,0,0.1);
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-weight: 700;
+  font-size: 13px;
+  margin-right: 4px;
+  font-family: monospace;
+}
+
+.next-btn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 13px;
+  border-radius: 8px;
+  border: 2px solid var(--teal);
+  background: var(--blanc);
+  color: var(--teal);
+  font-size: clamp(13px, 2.5vw, 15px);
+  font-weight: 700;
+  cursor: pointer;
+  display: none;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.next-btn.show { display: block; }
+.next-btn:hover, .next-btn:active { background: var(--teal); color: #fff; }
+
+/* ── RÉSULTATS ── */
+.results-card {
+  background: var(--blanc);
+  border-radius: 10px;
+  border: 1px solid var(--gris-b);
+  padding: 36px 24px;
+  text-align: center;
+  display: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.results-card.show { display: block; }
+.result-score { font-size: clamp(48px, 10vw, 64px); font-weight: 700; color: var(--teal); line-height: 1; }
+.result-label { font-size: 15px; color: var(--gris); margin: 8px 0 20px; }
+.result-msg { font-size: clamp(15px, 3vw, 18px); font-weight: 600; margin-bottom: 24px; }
+.restart-btn {
+  padding: 12px 32px;
+  border-radius: 8px;
+  border: none;
+  background: var(--teal);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.restart-btn:hover { background: var(--teal-f); }
+
+/* ── EMPTY ── */
+.empty-state {
+  background: var(--blanc);
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  color: var(--gris);
+  border: 1px solid var(--gris-b);
+  display: none;
+}
+.empty-state.show { display: block; }
+
+/* ── FOOTER ── */
+footer {
+  width: 100%;
+  background: var(--bleu-f);
+  padding: 14px 20px;
+  text-align: center;
+  color: rgba(255,255,255,0.6);
+  font-size: clamp(10px, 2vw, 12px);
+  letter-spacing: 0.03em;
+  border-top: 2px solid var(--rouge);
+}
+footer strong { color: #fff; font-weight: 700; }
+
+/* ── MOBILE ── */
+@media (max-width: 480px) {
+  .btn-grid { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .ans-btn { min-height: 75px; padding: 10px 6px; }
+  .ans-btn img { width: 30px; height: 30px; }
+  .header-top { padding: 10px 14px; }
+  .header-filters, .header-stats { padding-left: 14px; padding-right: 14px; }
+  main { padding: 14px 10px; }
+  footer { padding: 12px 14px; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<header>
+  <div class="header-top">
+    <div class="header-title">
+      <h1>QUIZ <span>—</span> RONDE DE SÉCURITÉ</h1>
+      <span class="sub">DEP 5291 · Transport routier de marchandises · Québec</span>
+    </div>
+    <span class="header-badge">ANNEXE 2 · LISTES DE DÉFECTUOSITÉS</span>
+  </div>
+
+  <div class="header-filters">
+    <div class="filter-group">
+      <label>Liste de véhicules</label>
+      <select id="selListe" onchange="onListeChange()">
+        <option value="1">Liste 1 – Véhicules lourds</option>
+        <option value="2">Liste 2 – Autobus</option>
+        <option value="3">Liste 3 – Autocars</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Section</label>
+      <select id="selSection" onchange="onSectionChange()"></select>
+    </div>
+  </div>
+
+  <div class="header-stats">
+    <div class="stat-pill">Question <span id="sNum">–</span></div>
+    <div class="stat-pill bon">Bonnes <span id="sOk">0</span></div>
+    <div class="stat-pill mal">Erreurs <span id="sKo">0</span></div>
+    <div class="stat-pill">Score <span id="sPct">–</span></div>
+  </div>
+  <div class="progress-wrap"><div class="progress-bar" id="progBar"></div></div>
+</header>
+
+<main>
+  <div class="q-card" id="qCard">
+    <div class="q-card-header">
+      <span class="q-section-tag" id="qSection">–</span>
+      <span class="q-num" id="qNumCard">–</span>
+    </div>
+    <div class="q-body">
+      <!-- NOTE_BLOC_DESACTIVE -->
+      <div class="q-text" id="qText">Chargement…</div>
+      <div class="btn-grid">
+        <button class="ans-btn mineure"    id="btnMin" onclick="answer('mineure')">
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFkAAABOCAYAAABL2LqMAAAqL0lEQVR4nN292a8kR5bm9ztm5u6x3DUzmQuZZJLJtbglySKZC5NLcmexyCJZ3TNTmK2fNdC86l16ESBA+hsGEiBAmFH3ABpII6iAnu5WqyFh0N1TVV1ck8x9ufuNxTczO3owj5s3WawudpNJQjLAM+LG9RsefuLYse985zuW8H0OAQzYIk9PcFgyLA6DBcA5k35lob/UxxXp1CwHMWDTr3BAYc3Oz7Pn0h03ntCdnXWHueW36W75Fb7GCG3D7GbFdI94YgQfIwCuyHnwwQf1qSeeYHG+zx/94b/myuUViSF9NXUTUNWd91QVnDU0IX7FFSN0X+J3Mb53I4sD9YBEBCHElmSEbigg8P4HP9EzZ17innvuYd/eZaLA//q//Dv9+MPzEk1IZjMOjRElEGNA5KuuuHvo7zrh/x9DujntnMGYXTMaMN2svuv+O/Xf/+n/ppc3L3Fp9SIb03U+/PzX+l/91/+lHrpjPwhkWYZzDsEABsHsRIjfDBcpNKXj1oeLW3+F3zG0c1oxSlRQgbxIcTgCt922l3/0s3/AAw/eR1RP3s8pm4a9t90ur7/xNh988HsqBsQavI9oZ2SwiHEo37+/fu9GtgKiEEIyhbWwe57f/8C9+sYbr2E0IjEQ2pqyLNnc3NY9e/bx0isvMz8/pKlrAFyWYaxD0ZuNe5O145eOWzu+dyNLZ9CZXaNC0wQAHnzoAT158iQH998G6llc7FPklrlBwdL8ggwH83Lvvfdw8tSJ5M3G4DWikmJDWgdvjkHypeO7GN+rkQXQkKKotemjzJxtfnmZ06df4LWXX2Hv0jy+3GL92gUlTLUebWo52mSyva73HLlL3nnnbe6667DmhQMf0A6RpGnx28at9+DZ+J49ebZIZTT1LDgDxvDgA4/o22++zZOPHxOtS4a5QrvJ9so5Qr1OW67rsG+kHG/p86dP8dypk4TQptgTIxgDPiYwPXvfL135uzL09x4uenl/x3tNbiFCMTfPmZde4uGHfkDPCX0H80UgTleYrJ9l89pHzLmSLI7VScNt+5Z59JEfcPSeIypAlmfJ0Due/NWG/i0vfevjezdy8Jo+hpEUmAXuu+8+fftHP+aOAwfF+Ja+acjCJn58gXLzU0bXfk1P17DtOoMC5nqZnDrxNC+98ALGQJyFixC+13ubje/dyG1sERGyzBJbz/Kh/bz66ss89sjDUldjQjlSCdtsX/8Mqa+QhxWcv0y7/SnUV+jZlrrc1gfuP8pbb7zCXXce0uAb3MyLZ9NEv79b/d6NDJFev6BtPQgcP/6Mvvrqy/R7ObGplDjF+hHXLvwC6svMZ+ss9bYYr/4Kra7gqw0MnrlexuOPPMTrr75C7ixKQEwXDL5noPy9GlmBiNL4Egwcvu92feHMae67/yhVNaVXWOlZTzNdY7p1EWmv4cIK88UW7eQcobzCaPMai3NDgq+ZHw54643XeeQHD2oMu1DGl675t/18K8b37MkpGWiaBsngvfff4dlnn6bXyyTEGg2NNuWI9WsXKEyF0xG+vIwNa+RsMt2+xMbqFUJdQvD0ioxHH36In7z7Yw7fcfi32k/5LgHcd2hk+YrH9DxiLBw+fFDffPMt7r3nqFgJOsg91fgy1fgCm9c/ZqEXKbShLUeEZkKee8rJVSbrH7N+/SMyPPNz87Iwv0def+Ntjp98lv4wB/EgnUl3mf27TLe/BSPPuIKbx+6sKnOGzMiMPkaAXpYIQGOgyAueO/4K+xcPU5ge4itorqovP6UZf8xCMcI2I7SpWewtQXBMyilGxkjzCWH7l4TRKjqNhNjj0SeOy4uvnWG4t68IGAvOWIREIGVZBtZ9Z2nfLfdkJxB9JETdIdENpIWOBGePPfGYvv766wwHA0I91WEREb9KOz1HqK8gcQujHmktsXWYWGA0w9Lgwir1xqf46VWmWys63+9hjOHoA0d55dUz0EFm50x3s4a2DRD978gIv73xLRj5bydZ1MjOGQEQ63Y9h/sfPqwvvnyCl148zr7lgWRM8ZPrXLv4C0Ybn9NU19FYI+SENkebHkYHFOS4CM57JhtXmGx8ztrK35CZEaHe5N677uadH73D0XtuVwAfGiAR/AbbBebwncSMW+7JISjGCoKk+4oRMQYFrDM88cMnefypR8kLg9FKXRjR021idZncbKFhGzEBZ3OEHmiBkx6FzSmAQQYFNdX4c8YbH1GOL2gzXdWFwUAee/hxXn311Y6zTl+2Ijix5Jkg31FQvmVG1t2HGIxL9TQVQ0JWhsNH7tZnTp7k2BNPEdsW6jF++xquWSEPa4TyKpkpyazHOAsmR8hw4sgkkktgPjMs9RUTriHhAtOtj5GwiY2tLi8syVtvvc3y3jkiEWOFgBI0wK7wdavHrfXkbmGJIeBDABGsSwvecG6Ol8+8ynOnX+bggTslN8JCbpFqndWLf8N08wIStnGmBYkElGggCqgGTIxYjWjbkNmIhA2crjPd+hxpV1A/ITOGxx47xpG779MYIYTQzSdNkeL/K5782/lZ06WylhucrqIEkMjRe+/Wt99+h0O33SPbGxW5GrTaxrZbTNcu0dOG2xbnAWhDoPI1TWwJ0tLGhhgbRJXQenwzxUqJNdu01SWqyUXwmxitdXG4JD959wMefvxxxSpRFJe57zQJvDWFVGHXgqJgDMZaYlvj20iv3+fIkSM8dewJGRYDpvWE5X19ufKrT7XdOIcNI/o9qMYlahxttDQ+ZYf5jIyPDquCGkurgbzIqaXF6oimvMzc3GGs2YuPkX/yT/6ANgqXrl5h69oKnlR4/a6ShG/lOr/1TYQEk2JEQ4uxaVV/8tjj+o9/9o8gNsS6ZCFXaFe0nJzDskFuKkQNogNctg91ewluCPkC9JcIdp5g9tFfOILP5vF2CLZHURTkrkL9GrG+grab9Jxh/96D8uYbb/PEkz9UCkjgwoDkXSX3Sx9bBBHBmG/na/jGnrz7Y9w0BWexIwQgojExmcdP/FDff+9dXnj+lORGcDrBtCs6Gn1EMzmHjddwpgEtaHyfzVWw/QGmGJD1CjJb4MuG8TRQjSJZ7wBts5lS81gRpUFixnTzC6gyBmFR995xmzz84IPyz//gn+pHH/2lXj13TSAjqCR2VeRLmg296fGbjlsQLsyOVgJSYcIYR2g9EXjtlVd45cwL3H5gL1cvfKZz/Yhvz7N65T+i/gpqthEHUQa4Yo47D9yNm9+H6eWQZfSyHrRCKC1Cg8k2mYwvMd26StOsYymROCJMLlJPhIWF+4jlBgbDiWef4fTzp/i3a/+OdktxrsD7wK0Gy7dY3JI82BghCBw6uMzpU89y152HaKoJywsZOvqMMDrLaOMzhlmFIdI0EDRnbukulo88CQsHIc8hRHAF2D5ZWwAVhMvMb83R+EBdjSBuIG2FDx6Pslwko9cTr/3Myu9/8FP98Nef6i//7w/F+5rdidSXPfrbGrfQyDdImdYHlheH/OTHb+uD9x6l54xUk21d6LWsrXxEvf0xYXqdYm+Ppla2xxFE2XvkTjB7ID8EvUEqm9gMyNNbtxOkMGqGDZJdwMeIayqMePpqyO2YtfN/yZ4jPe3JHubm9/HiqZfkw/fO6vbqv9LzZz+X3UZW1Z3q+eznb2N848j+u5QLc3MDROGJxx/V3/+9D5gb9gi+UVHP+pVzTNfPU29dZGAEotA0hlEpbEwhG+yH3l4o9gpmD9j9IMsg87TZHG2xCL0DInO3k/eXMeKS8FA9fZ0yZydsXP4V1eY5QrXOMM/JxPH+u+/z3rtvUvTNb0i5dhv221r4bjmKGY+n7Nu3yInjz/Dowz/AWcEQyI0w3togVtuYZsqwGFJuByYTi49z1D4jmj70FkD6wIA2FFShYKKWyggx79OGPsgC0biko/Mt0kzRcgzlBvO9ilw2aUYrtOWYalRzx6HD8vprL3PnnQfUZYK19pZ48Gx8YyOrdAdfSkq0WwANHD95Qo+fOMVgMJDMCFptM10/h9++hPoRGgO5c4y3S+pJQDQjePBRU1qmXWnfkeCXGGKMRAKNhnQRyXB2QC+bY5AvUGQ5vUwZbZynnVxAq4todVn3zgm59Zw4+ay88OKLGGsxTpg57Y3Pr0lps9tUf09lzDczcqeRQKAoMiwpWuYYhq4PGPYeuI2X3nqDO+59gNWNsZoYyZpt3PgjzPRjcuvp9QesrawR6oYsRqQqMaHGxgq0BGmomjECtFVLobBoM7JQYRhRhw3G21N8ndPvHaRue5h8QBta5vqwevVXTFf/Cpl+CPXn6strOtou9V/8y/+CUy8+r633BNUE6zujzA+GJFqr48tlxpt/+bjVRgbIMhCo6zYR9DgcFu8bsizjzJkz+sgjj3Dw4EHZszwvod6iHF2mGZ1D6zWatqRpGnwb0RAxQZPDaiCGuvPiiHTVDSFiiKARFxVrmkSFSpo2US1IgXb6Y2tbDCPErzLZ/IRQXSBjxMJ8X5aWluT550+z/9Aedhe3C+eYTifYmxKVuMuLZ0Kcr1fE+uZGbutUZQCsy2hpaKnxtOzZs8ALzz/P4QOHKEyk5zxteQ3iFjE0GGMoy5KyrJMiU2+GUG3boh2xNFuEjDE3xU9nJGWTtAgtSoOYFhVFjaKS2GuVitXVc4xGV2nrdfqupZ8Lr75yhueee06dczuGNs4mWlYiSvqSk0F3L/Nfv0r4zY2sYDovajXSAC1QDC3HnnpMjz/9DHvnFySWG0q5quOtL6gml9ncuM7W5jp11VDWIak6VVAxiBhUoa7rtJiZVEKCiIgizESKSYWsbQXqUamIWiHGoyZ9OWoEYyM2a5iOr1JPrtKMr9JOVjVWm3r/0Xvk/fff5/Y7DulMrls2dSosxPDVsVe/9Pg7xjczsqY3iJ0KM0RFClALx55+XN9998fccfCQzDlH5ieE6WXKzS8Yb51nsr2SjBgU32qXdtubUtq6rmnb9kufWIhEVAMYBTH4ugatgYqgY9R6VCLRSgqnNuJsTfQbxOYasbpKmFyh0Ip+YTh98hQvvPACxiYPDhGMFfRvW+T+DgDkG3tyJgZREONAIjGAmYNjTz/Fyy+/xNA5BkYZmgY/vka1fZHp1jVCMyWzjsTzKqmZwaJ6447quqZpGmYerIQu9s4+vYGohLpBYo1SE7UGE4iShOFiXVqztMKZEm1W0eY6Mr3Ocl+RttLFhTn50ZtvcfjwYU35jksO82XrdFUI0b8bwPhGRhYS/2MwWCvMlucfHn9aTz33Inv27JNhz2FtSxZGbF39nHp7jWp7lelki8lkRAzgg6AxreszjwbF+xbvU21ONcm6Z/E4zkBjFGLdYmKLaEPUtouhFpXUrqCqoDX9IoDfRstVqs1LWC2RpkTbhuPPPs2bb7zB3n37iB1y0MhNHivw9ypZfUNPNhgslgzvaxCY37/E7//+P+SF0y9KU1baTNa1Xj2vG1c/Y/XSZ2hdUriMfp5jbfLcGLVb9H6TDYuhJZVdf0M7n0ZU8G1CITEQo0dNB9DVEDVlzqKRfibYOCFMVxlvnIfpKhkVuQS989B+efP11zly5IgCuN4gwbaOG58Z9wZw+xYh3JezoRnXml4zQI4iGJvOOXPmjL50+mVstBRAKDdYv/YJK5c+wZdb4CNGhSzLuk4nocj7O8a1Yog+IKpE3xDbBmLAiGARTDeHd1T0TasmKr5OlRLnHBqFENMMib4LQ00k1BV9K8RmRBYnbF0/S5ysM1/A5solPfboQ/zBP/un7N9/UH1Vg2SgBmtStmV2RypxGPl6jT2/84wY42+kmbuNbnAoyRvvffAu/elP3mPf8h4JZanLg0Jis87qlU+4fvkz1Nf08x4ESwiRPOulMNARMyLaIQZFNCYv1gSbZNbBwy6uN6Yg6X1D8B6iImoIQQkhpnjvI6IGZzIcgsQWExtiu007vk6sVqk3LtI3DYf2LcgPjz3OmRdeTERUV/BVTdhOAGtSWIuqhK+Zfv9OI39VHr/7Nd9N5cWFAS8+f5rTz55g33CO+cxIvX1dN65+ytrqWcrxGoLHSI5Gt9OIo6po9IhGnBgMmpp18MS2SYaOifg3HaowkAwcI5hAU5eEpu1iuaA+1f6iD6hXjBoy4zCapYRHa2IYMRlfodw6x/ba52Q6IqPShx46Kr/30/d57NHHFNt1yqq50VNlLYpFMcjXbLj8e8XkmfcpkUCNx/P888/rW6+9yZzNJY5HLBZRN69/zoUvfgFxm4XFAmuFpq2ICCoZdd0SQsB7j6piJB3OCs5A2AkXqkgn89r5fg0EDwSadoL3DQaLaCc5iArRp8ItBmcKRA0aIoJiqGnrFbbXP6MZXcDJhMnoKgtDx3OnnpbXXnuF4WAAKkSNGDFE6CBlN7u+pgDpaxl5dxy+2bMjalr27Bvy/PPPc/ypZ8mBWG5ps3WZWF9lMrqMk4aiZ0ACTWgIBASbUEWIaPAYItakBcqYiDVC8G0XMtJsEbrPAVgkoQit8KFECVhrMTFBSpu6fm54fTBYHATFGHB5izMTYnWVdnIBwhriN7CUumdpyJkXT3PPPUc0CXO6ewUC2olllPg1s77faeQbLWBfgQq7xs4zr53WJ598isIUYkPQ+ULYWvmM8frnzBWKb8dMy23aUKESCBqIashcL338GBP2lGQ4K2BRYtsQmibp1robNTsL7uyllOUZFEtCKEY73ko9zpA8WgUhQ8QiorhMsVlFPytpJpfYuPIxod6gmqxS1yMeP/aofPDBe9x7770Kkdi9Z7rvkA7dpRj9W8bXrozMQsRsWGsxWeTgPUv6e//wPe47ej++CdrGKT27zcbq51y98jGLPZjUgRBaorFgA+pTP68xOdhAiG2XZEQIHnUp8WiaCu99p1lLBI12bJmIpNdDSdSazAoShegDBsFYxfuAkUDwDdZZrLV4BDGKdRG0IZOKsm64fvlT9mRLBPbQW17SxYXb5Cfvvcvm+hr/w/WrbG2uJZpVE6BMmE6/Vub3FZ78JSpP9cax6xSxIE549tkTPP3UM+xZXJC9CwOh2WTl6kdsrZ2lnV6HMKXIHcPeEGsKgu9CjnhCLDEOjI2IUaQzIhrQ4ImhIcQ6ebKmmxKlCxPJk9RXoC2YliieKC0qETsLK5rCkUTFGIvZJQOwArGdUmSeullDZEJo17G2Yjxe0TsP7ZPXXn6FAwcOJcC4mxv6O6R85uZzb/Qlp6iXUo3C2R1dMQLFIMOHwBNP/lDf//E/ZuCWxGlLU17WPUs15z79c2xcBb9BrLdxESTk0PaxcQ6iIYYpxlU0fgRWcVlGU9b0iwEGofUV4jxNLFGtUV8DghhDPRkjeDAecZZmOiVIhZcJjdRInrK8DEOO0reCEGl8JKpDYw4hx0oGUYm+wknFZHSZcnqR0Fxjoe8xWnH34Tt45413mO/tRWIfUZOqFH8HyPAVp85iXjKrIHgf6OWWIktn1NOWu+4/om+/+y6nn31R5ntDejZgmXDt8q/ZWP+CjbWLGG3wbYX6gASL1RwjGca45Ll4rBWsdRjjwOQgGVGFiBJC2EUSdVuHaHeuAG2r1C0EjyEgGWBNyhyjYI0h+AaNKd1WDd0dpgTLkkJIkTsKF5huX2GyfZ5yfAkTx2TS6JE7Dsp7P36HR3/wqHoFZ/M0q4x87WD7Faft7qjQnX9bH5h1xZlM+Ol7H/Di6edZWhwy3VpR1RHV1nUunP8UQ8AYw9xwgbZuMCYgJr1mkS7dtemzqsWSgxZghECGF0WcIWhODBZfC/kwJzZppkdcUiapQttgY0CDpoRDegkfq0MEonpUPaoRNbZLLATVSAjJjXJrUSOMpyv4kFFtXGRx7k4yO09RWI4/+6S88+M3dWO0qp988akgICHh8a8zfovTp/inRNQoxjpCpwASYO/SXl5+6RXuvuNOiXVJ30XKyQobqxfYXLtMnqUUuCprBJc8q0takNDBwQwhw6iDYGi9JailFUN0GflgiHUOoxCbFkLAlyW+bojRp9VdAsSW3ICEgFGDs32EHKFAcYkoMhBNS6QhUhO1IYQW7z2+jcQQyF2koGZgpoTJdahWKZhiXEPwY547/SxPPvUYra/JrE186NdsPNkx8o24fPM2BUHTEQExlqLo8cTjT+rtB27ntj17yWPNwsCwvX6B7fWLRL+N1ZbcWIiWzBRJQUTA03TGjgguhQ9N3h1CwAONelr1mMKCjWhsacaboDUuTslMjTNToAQpIU7o2YjxHgI4U2CkB6YgqCUIeAlEWqLUIAE1CSbO9G4xRggVfeOZkxKmV2g3z2OaNYgjnUzW9KFHj8pbb7/Ok08eU1SRIGTm68ULt9uZb4gxbxZ8qCpZltG2LUeP3qd/8M/+OXuXFoWmorBeq40rXL/wMfX4IuKnxDDFOUd/YQn1iZAPRDTtg4OISXgVxUrCyE3HnjUxEI0hM4a2bNB2k2Z8FfyWGs0BLzZMFAUNK2i5Si4trQRMUIzNUvlTcqK2eEgoJHqwYEyWkhGTmnQMBbFpaCYlFkX8GFqYrJ8l7y3iyCn6B7C9JU6efo5/GZV/8Z/951R++iWbfS0j3yhU7vzRLogi1rBnfg8/eusN3njtFbEGmvGWDoaeyxc+pJ1cIzYbxHYbxdPUAQlgTQ6zaG4UMcnIhAwhILSISTjYuAwNJUGVjJbQNMRqyGT9LKwfIniHHfR0q94gmxdieQWzfQlLCU4xUVOxRA1iMzQKOINiiBIRTfHOiMMah0hGDCDG0DZNwv5NTW4s1egSW2tz5OQsHVpiZfO6WjvgoR88xr33PaS//MVfytctpLqbv4vf/CNxDvWepq754fOn9cdvvYkjok3N0sBJu35BL33xK6xOMFLTimfP/BDfCG3pMZkSkM7AN1J0RDCSUmdjA0rEWoOoR/AIBvVjQrnGZPUc1bUDjKYB7WVs1GsUS4JpN+mNryNUZDYx7ErYgfQBwTlHaxKwTy8niKoxQ4yhaiusFYJXMjHYCHkBm9Uqk+0epe2z5477KIo9zA32SlmKvv76G1y6dJb19c2vVYVySqLvnHU0bXXDgxVwgnbFxLvuOaI//eA9njr2qPRsQEOrW9cvU619QrV1FWfGDHIoy0hTVziKxFhFQSV2u1ylCrIAEhzEjq82iRRqqhJxkdxafD1lkIHWE0bVZX6x+adMqsC4mZItOYpFYZDX7HWR5b6iscFYqMoxIj18aHDOgbH4VglEXJFjTA+NjphiBy63eO/pD+ZxarFO8G2DMZHR6CJFf5HtzS+w/Xk219dUxPDmW2/zyWf/SX/+8/9DJuN650vdze1YawndLgUOUlV2tn1BliVu2M/wmrUURcG7777LY48/jMXjq4nG6TYbV89Sb5xDwja9PFBYQYs8cQg+omo6pkY6zqDDqQoGTTXBmCBnjJKqGK0kGQCKRKGcVhAN9Gpy12cxn8f1lMxF+oUiWhLUgyjBN7TRkhuHMYKoYqzFxgyNAasZqgnGecBF8ESigLUO1KYsQTyOBmeV0eZ55OKHLO6/jazos7iwR3r33cMbb7yuVTXR//3f/7E45zDG7LCJwI6BAZwYg8Y0XQUSFzubAz4ZYu/te/W1l89w9123o36iNk7x1RrTrUtsXfsUG6dkYjAa04obFa+KdQYV7WKhdD0kKdArbZcqG2LMEDFYNfjYIB1JbrAMBgtYt8Swd4DBwjK2sERTo1lJnk8xYYM2rGMEvKadW9SEJANAsCYjM1kKherQaHZ28AqGHSZNbIZRi5K+MKtKjkddi59eI1TXKdwSKpn2+0N55vjTXLx8gT/9k79gOq1wzu046gyxzLzZaYypnyP4Drxz40SNSJbx1FNPccfh23FEJE7JZMrG5iWa0RXaco1eHpEIbVsn7YQmm1pn0g6FQmLBjO3qZZpWfBTtvMiJxRqHixlBPUEMKhnF4Db27jvK3MKd9IdL2NzS6ASVERrWyd0cK1e3sTGiRih6FglJcZQ7k2K9OFSUqAbdyWjp4ORsxG5xTIUBMUohBtUGX23SjM4h2sMODVG93n3kTjl58jn94yf+TP/8z/9CvPe/Vd/sEi9642Kmi8ex87Jjjz+pP/3pT1leXCDPlJ5Gms1VLn3+S8qNiximFJlDfUtoI8bYLn1V2tiys7veTDcos4DvIaU7GBGMSf15US11yAiqBOmzcOBu7nnkOOw5Cvk8OENfGjBTqC7B1idcvPQJBkvhHLnr4actMdRYWxB9i8RuFu3MpoiatECmmkdEaYiqycCiKeUmwwBVHNNufI41OQtLS1TGkmcLPHD/g7z99jt8+OHHrK+v0+v1KMtyx9A7no3EHb5WlSRt7diw3nDIM888w7NPP8Nw0JNBP8PSsrF2mdH6JaLfxEiDoUnFTxwWR4wGFajrEsR3XpIup1G6qkpApSFIS6N1V8oPOzIsFYeXjO0W4nAZBnuEfF6wC4KZF9wymEWYP0QdcyIFEYtYUE30qfqW4H2KzV0hVnZkVyGFhqhYJRnZ1NAlLKKCicLQWPraotVVtLqEjWtkpqKcjDXL+vLEE090nDM7Qpwv95wYslT2tl212fu006BgeOG5F/TUiVP0+30RDSrBs75yhZWr5yiySC+LWOsJweO9R6LgW/Btmm4qkaAer74jbWaaSTAEwKOmJlDSxikhlokIJ+Xw0Tlir08YzqFFH58P8VmfScxRClGZAxkQGWDzIW00tDGFIBHFhwb1qfvUqOnK+jFdt0uvjaYYaU2LNRWSxYTbg4UG6lFJnGyTxy2or7C19ilWxxCVQW/I/v0HOXHiBAcPHkzc91cMQ5tCRZanxaa7RQ4eOsS777zN6ZNP40KpLpaE6RqrV86ycf0yRSap+15SwPfe08ZA1TY0vkWtw2aOSJcMqBJIO8N2FTLAJH43WqIPhBAI6pO02cwqERF8Q6jHSqwweDRUoAFxQKyxTun15lA1+JDUTDZzqIY0/TtvNQi2U/8QJVHSsdutVg3W5IkRlHxnujurFDksLxRkUrFy5VOa8VVsu0ZuSvbtnePUqRPcf/+9ihFcnmHdbKvi5MBOouKcoapS2pmE25Y33nxTT504zp6hFT9d1z3DjL/5v/6EeusShbRMJw2DbB5iIGiNcZZWPZqBtTmVDyh5mhViEAvWpJiURCw9JCqudamF1wHG0GqgjQGTZ8z3Mvq+wq9cpL/XEJprGp2hZ6HemiBxhcKcp19UjLY3me8vUW1v0TM5pshpY0Uvy7pr0hVrDaIWkd7O7r6pYJDthIhITLyJBsp2wtzcElEidV1hY8n29U9YPtijQLR2PX749OO898FP+PTc53rl6moKCcbs5HguNzmNb5LMQFLB4b4H7tWTp45z+Pb9UphSB3kkbJ5nunWBauMyoRqjPtBEyEzKoJIePBXCogFEUNGdKkKyb0ToYq5aRAWJJpWNgifYSCCFFwkO2gmUm6xf+IjeygpeDWTpfUOsyfIxGRcI9TaZgMWC7SEoIehNDY+qaavUMFMFGYtKxIhHRRA6sYoaLIFoWrCBXBxtW9N6aOuW2juQK8wNF5lfWGZxfoFoc5449jg/+9nP+G//m/+OHRlqt9WDa2LaqTWgEJRioc+Jk8/y3HMnyXPINZLlytWzXzDdukY7uU7PRKyzOITcCKops4pWE2crkaiSwoNJKXWqsaRHIYI1nQy2I6GsYIxHJHTIJintt65/wca1a/iQwg6ZEGLSIA+HcNcdA/rRkDtHroZgHVYjIkJeFGlHANiBi0ETN6MhefBM+mUk7uy5LCpIUCRaermjVcjFYvtDYmUoyy1G69fJByvke28nN8L999zN6y+f4d/8T/9Gz31xXtKGHglVOcUmnCwBrOfkyZP65ptvcPSeu6TcvK7TegOprnH2s19SjtcwYYIxBicGhyWEDi1IIMYkZQ1GUYRUNO94FA0pzpIkWGam3uz0Gxo9RkLH9SoSFR+m5NKjbkcYL5jMUVjB9oR+zzK34NDpFv1cUN9SVxMIkUAkdDg9KaACiCHODJ2ki12sTvg24jCdoj/VdNPf1XUKX2Ij5A6jgdC0jLauEN0i+4dH6RUL4vqO5fl5ff/dd/hX//3/yMb6OkXRo6najoUzFnzNgSOH9Ec/eosnnzpG005BW6pyzHT1Etevn2fBeXp5Rt+khUQ0oNEkzjkoUQIqFkST1lhi1xIQEbEYkmQKupQbwLj0XEwSCmq6ERCsRowEjANxFjE1ViJFBoPc4ULEmUDhHCF4IhXiktwrdrMjEFLYQnZkVXHWMRQDmJgEMxpAcoSuoIsnKfcjMXpCaAhtQ5A+/WKIy8a0zRpNuc384E5QZWlhnvfffYe//qtf6B//hz+RpqpmqgmInSLzxIkTnDjxLIuL87K5ua57Bxlr4y1Wrl+jrCqWl3OsRII2SY2pEWMcbQwECV2/RurqMGKIYrBdj4ACoZM7CTO1pEmhRmZTyyHqulTc0Gq3nY11FM6CadFYYUVQWqbTimE/o24TP6ImQ23yWB99mk1d3XP3SNIwQYx06wSkvMwi2BsMu4KxiskyVJWAI8syorE0WjHZXkGvXiGaQ5oP5uXw7Qel1xvqyy+9wMbGhv71f/prAXA2d4S25f4fPKjvvfcOhw8flizLkCzDZk42Nse6sr4FdkArgm89TgUnjrZuEWMIGGK0KV3UBM1EpVMQd2K9qDfEhTq7WQHNUhaoOUjyqvSzoFEJTaqkzA1z+oOczPbJhpZeX5BmQhkC0qTVXOwAr4qPLZ6EYrKsu34nzjEdhJsJFhVNxJTOFvCE5SUGNHo0NEmAbiXtn2RyGjVUjTKpa3S0SW+yzUJeaN7vi8udvHDmJW2DcvbsWSbjES40ifB++JEHeeqHT9C0lWZWJHO5rG1sqc2HuGKJpQP30i9amukGzhj6+TyUZVL/yAwKJc9VI90ikyoqM+MmpdCubEgNxthOeqU7xrBdZhhDYNCfo66m9PoZ84MCTI3LI+oi0Y7p9+bwPqRw4ize1zt9gWINbVvfkJl1WHm2NU4iahLiSXXI2X+gQdLMaSCz4H2TqFpnEevIjcMtOAbmNio/R9EvcHnGxvaW5r0FeeSxh6X1Uf/nP/pD/dUvfylOxHPgtr2cOP4k+/ctS0Qox6X2h4vSmIK5pf3c6R6jKa9jw4Tlg2nB863BNTFxtp2aXWceY02CTqbTz+2scZq0b53BIeJc7JKGFMeNMaTm3TQj8qzXSaFCUoXagM0ixgXmjAHN0wKsaVHrCRRCQjVA3iUjGlP7mtVkXNNJgtV2M5C0j/MseJiYMBcxkMWu2i2k8zObNjOhj42LzC8vEVXEOKtlXdHrD1jeu4eXXj7DRx/9GmcUDuzfo3ccOsjC3JD1zS1VVYIaxBSy7+ARJNymhDsx4um5rJO/5sQI2txIJWNXnJwZFxFm7NTs90Y7PK6K6RYXtE03aVxS+RjXTV/T9YyAikdMxNiIMdo9GtAM1DEja2fGng3vm27LvbT1nlPpsr80c+oYiWZWNUl6z5mKCU37HEnsCDRrUvuZBYwQTcZoGggiNN4rzoliwGXsO3hAHjt2TE2R4aSLU+VkiqpirZXhsJcwqS2YVDWZybF2EWciJRYNjqC5mGgIWmlCDwkTCrLD16qAdYOdW05dn0pQ1RSbW7Ks1+mPEw6W6NAgBE0v94bLAsmLxATaTjMns7izs7UsyUAyK3ElrsJlgjMGq4oEJbQNMUSl4zi8EaIxIt3MmzkAMUBU1e5mUhed7uD+2CU8c4s9aXzQVgOK0IagNLWMy6mOqmnikwHOnv1Cfv7zn+vDxx7TpeU9LMzvk3K6rb5RyvGIPBP6faEoMvK8EOv6ODufxCp+IkZSz9zMY2cxOOxSxccYCTFpkUOM+BDQqJg6EThBAzF42pj2KfI+4mNgMjmvUZUokYh2cCpVclI3VKqXStTOQHTTPWGE+f6APLP08oKec+RicdZSuCzh7sFA1LqUHYrt+KsI4lCjEmJaINGIBsV7rz5EmtDgo2f7/AXN8x7DhSXyQU7tW7Ymlf71X/2CP/zDf4uvPU7EsD1u+Yu/+H+4/V//EQcO3c7+g3eoryB6ZbK9hZFAlilFYcmLobpsgJgFLIJzFcb4GxTlrkUuapJaJeNEQkjA3vtkKI2CtqHbPiwRTjFA27F6bWw7ujB5coypXNXGQPCJLi2rTSIBDen9Q+jifUifo2cz8jxnOBjQy3P6RUGROXq9HnmeU/SGmsKAQV03rYk32iV8SBA6pvf1GmmDpw0NIXicTd9yMZxHcbq6vsX2qOTDX/+a//PP/kxQRay4rkYG+RCaErK5glgnaNfLC2IoCcEnnZ1AlAyNPTRGiqLu0uGbPTl1NLEjK5iVBSLcEIkqqX2VDiN3/3VFmvqdcjNz3FRF17RxFDGJyun5G0qemcJst7Jn1gYt7PyPPMYklZfpNknFJHIl2gQXvYZEbEUITcen7QqBUZOAiO69ZiGbwkAdSVLVLLVEK/y/N4IjkUjZIT4AAAAASUVORK5CYII=" alt="">
+          Mineure
+        </button>
+        <button class="ans-btn majeure"    id="btnMaj" onclick="answer('majeure')">
+          <img src="data:image/png;base64,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" alt="">
+          Majeure
+        </button>
+        <!-- BOUTON MÉCANIQUE DÉSACTIVÉ — réactiver en décommentant
+        <button class="ans-btn mecanique" id="btnMec" onclick="answer('mecanique')">
+          <img src="[IMAGE_MECANIQUE_BASE64]" alt=""> Mécanique
+        </button>
+        -->
+        <button class="ans-btn infraction" id="btnInf" onclick="answer('infraction')">
+          <img src="data:image/png;base64,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" alt="">
+          Infraction
+        </button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Question suivante →</button>
+    </div>
+  </div>
+
+  <div class="empty-state" id="emptyState">
+    <p style="font-size:17px;font-weight:600;margin-bottom:8px;">Aucune question disponible</p>
+    <p>Sélectionnez une autre liste ou section.</p>
+  </div>
+
+  <div class="results-card" id="resultsCard">
+    <div class="result-score" id="rScore">–</div>
+    <div class="result-label" id="rLabel">–</div>
+    <div class="result-msg"   id="rMsg">–</div>
+    <button class="restart-btn" onclick="restart()">🔄 Recommencer</button>
+  </div>
+</main>
+
+<footer>
+  Quiz pédagogique · Ronde de sécurité · DEP 5291 · Transport routier de marchandises · Québec
+  &nbsp;|&nbsp; <strong>Propriété de Guillaume Nicole-Roussel</strong>
+</footer>
+
+</div><!-- /.page-wrap -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  BASE DE DONNÉES
+//  Chaque entrée: {s, note?, t (texte SANS code), c (code), a}
+// ═══════════════════════════════════════════════════════════
+const DB = {
+
+// ─────────────────────────────────────────
+// LISTE 1 – Véhicules lourds
+// ─────────────────────────────────────────
+"1": [
+
+// 1. ATTELAGE
+// Note: 1.B à 1.F s'appliquent lorsque les véhicules sont accouplés
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.B à 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Élément(s) de fixation du dispositif d'attelage manquant(s), cassé(s) ou desserré(s)", c:"1.1", a:"mineure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.B à 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Attache de sûreté ou raccord manquant, détérioré ou mal fixé", c:"1.2", a:"mineure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.B à 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Plaque d'attelage ou pivot d'attelage déformé de façon à nuire à l'attelage, fissuré ou mal fixé", c:"1.A", a:"majeure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.B à 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Mouvement entre la sellette et le cadre (véhicules accouplés)", c:"1.B", a:"majeure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.B à 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Plus de 20 % des éléments de fixation du mécanisme d'attelage endommagés ou manquants (véhicules accouplés)", c:"1.C", a:"majeure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.B à 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"25 % ou plus des goupilles de blocage sont manquantes ou inopérantes (véhicules accouplés)", c:"1.D", a:"majeure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.B à 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Mécanisme d'attelage mal fermé ou mal verrouillé (véhicules accouplés)", c:"1.E", a:"majeure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.B à 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Élément du mécanisme d'attelage manquant, mal fixé, mal ajusté ou endommagé au point qu'il y a risque de rupture ou de séparation (véhicules accouplés)", c:"1.F", a:"majeure"},
+
+// 2. CHÂSSIS ET CARROSSERIE
+{s:"2. Châssis et carrosserie", t:"Longeron fissuré ou traverse fissurée ou cassée", c:"2.1", a:"mineure"},
+{s:"2. Châssis et carrosserie", t:"Élément fixe de la carrosserie absent ou mal fixé", c:"2.2", a:"mineure"},
+{s:"2. Châssis et carrosserie", t:"Longeron risque de casser", c:"2.A", a:"majeure"},
+{s:"2. Châssis et carrosserie", t:"Longeron ou traverse affaissé et qui provoque le contact d'une pièce mobile avec la carrosserie", c:"2.B", a:"majeure"},
+{s:"2. Châssis et carrosserie", t:"Plus de 25 % des goupilles de blocage du train roulant coulissant absentes ou non en prise", c:"2.C", a:"majeure"},
+
+// 3. CHAUFFAGE ET DÉGIVRAGE
+{s:"3. Chauffage et dégivrage", t:"Soufflerie du pare-brise ne fonctionne pas", c:"3.1", a:"mineure"},
+
+// 4. COMMANDES DU CONDUCTEUR
+{s:"4. Commandes du conducteur", t:"Accélérateur ou embrayage ne fonctionnent pas correctement", c:"4.1", a:"mineure"},
+{s:"4. Commandes du conducteur", t:"Klaxon ne fonctionne pas correctement", c:"4.2", a:"mineure"},
+{s:"4. Commandes du conducteur", t:"Moteur ne revient pas au ralenti après le relâchement de l'accélérateur", c:"4.A", a:"majeure"},
+
+// 5. DIRECTION
+{s:"5. Direction", t:"Colonne de direction se déplace par rapport à sa position normale ou volant ajustable ne demeure pas à la position choisie", c:"5.1", a:"mineure"},
+{s:"5. Direction", t:"Niveau de liquide de la servodirection n'est pas celui prescrit par le fabricant", c:"5.2", a:"mineure"},
+{s:"5. Direction", t:"Courroie de la pompe présente une coupure", c:"5.3", a:"mineure"},
+{s:"5. Direction", t:"Colonne de direction ou volant se déplace par rapport à leur position normale alors qu'il y a un risque de séparation", c:"5.A", a:"majeure"},
+{s:"5. Direction", t:"Servodirection ne fonctionne pas", c:"5.B", a:"majeure"},
+
+// 6. ESSUIE-GLACES ET LAVE-GLACE
+{s:"6. Essuie-glaces et lave-glace", t:"Essuie-glace du côté passager manquant ou inadéquat", c:"6.1", a:"mineure"},
+{s:"6. Essuie-glaces et lave-glace", t:"Système de lave-glace inefficace", c:"6.2", a:"mineure"},
+{s:"6. Essuie-glaces et lave-glace", t:"Essuie-glace du côté conducteur manquant ou inadéquat", c:"6.A", a:"majeure"},
+
+// 7. MATÉRIEL D'URGENCE
+{s:"7. Matériel d'urgence", t:"Trousse de premiers soins requise par la Loi mal fixée ou difficilement accessible", c:"7.1", a:"mineure"},
+{s:"7. Matériel d'urgence", t:"Extincteur chimique requis par la Loi mal fixé, inadéquat ou difficilement accessible", c:"7.2", a:"mineure"},
+{s:"7. Matériel d'urgence", t:"Présence de moins de trois fusées éclairantes, moins de trois réflecteurs triangulaires ou moins de trois lampes", c:"Art. 432 CSR", a:"infraction"},
+
+// 8. PHARES ET FEUX
+{s:"8. Phares et feux", t:"Phare de croisement, feu de position, feu de changement de direction, feu de freinage ou feu de la plaque d'immatriculation qui ne s'allume pas", c:"8.1", a:"mineure"},
+{s:"8. Phares et feux", t:"Aucun phare de croisement ne s'allume", c:"8.A", a:"majeure"},
+{s:"8. Phares et feux", t:"À l'arrière d'un véhicule d'une seule unité ou du dernier véhicule d'un ensemble de véhicules : aucun feu de changement de direction, situé du côté droit ou gauche, ne s'allume", c:"8.B", a:"majeure"},
+{s:"8. Phares et feux", t:"À l'arrière d'un véhicule d'une seule unité ou du dernier véhicule d'un ensemble de véhicules : aucun feu de freinage ne s'allume", c:"8.B", a:"majeure"},
+{s:"8. Phares et feux", t:"À l'arrière d'un véhicule d'une seule unité ou du dernier véhicule d'un ensemble de véhicules : aucun des feux de position ne s'allume", c:"8.B", a:"majeure"},
+
+// 9. PNEUS
+{s:"9. Pneus", t:"Indicateur d'usure d'un pneu touche la chaussée ou profondeur d'une rainure est égale ou inférieure à l'indicateur d'usure", c:"9.1", a:"mineure"},
+{s:"9. Pneus", t:"Un pneu, d'un même assemblage de roues, présente une matière étrangère logée dans la bande de roulement ou dans le flanc et qui peut causer une crevaison", c:"9.2", a:"mineure"},
+{s:"9. Pneus", t:"Un pneu, d'un même assemblage de roues, endommagé au point de voir la toile de renforcement ou la ceinture d'acier", c:"9.3", a:"mineure"},
+{s:"9. Pneus", t:"Pneu déformé, bande de roulement ou flanc séparé de la carcasse du pneu", c:"9.4", a:"mineure"},
+{s:"9. Pneus", t:"Valve usée, endommagée, écorchée ou coupée", c:"9.5", a:"mineure"},
+{s:"9. Pneus", t:"Pour un pneu installé sur l'essieu relié à la direction d'un véhicule motorisé ayant un PNBV de 4 500 kg ou plus, la profondeur de deux rainures adjacentes est égale ou inférieure à l'indicateur d'usure", c:"9.A", a:"majeure"},
+{s:"9. Pneus", t:"Pneu simple ou les pneus jumelés du même assemblage de roues présentent une matière étrangère logée dans la bande de roulement ou le flanc et qui peut causer une crevaison", c:"9.B", a:"majeure"},
+{s:"9. Pneus", t:"Pneu simple ou les pneus jumelés du même assemblage de roues endommagés au point de voir la toile de renforcement ou la ceinture d'acier", c:"9.C", a:"majeure"},
+{s:"9. Pneus", t:"Pneu en contact avec une partie fixe du véhicule, qui est à plat ou présente une fuite d'air ou un renflement", c:"9.D", a:"majeure"},
+
+// 10. PORTIÈRES ET AUTRES ISSUES
+{s:"10. Portières et autres issues", t:"Portière du conducteur s'ouvre avec difficulté ou ne s'ouvre pas", c:"10.1", a:"mineure"},
+{s:"10. Portières et autres issues", t:"Portière de l'habitacle ne se ferme pas de façon sécuritaire", c:"10.A", a:"majeure"},
+
+// 11. RÉTROVISEURS ET VITRAGE
+{s:"11. Rétroviseurs et vitrage", t:"Pare-brise ou vitre latérale située d'un côté ou de l'autre du poste de conduite n'offrent pas la visibilité requise au conducteur parce que endommagés", c:"11.1", a:"mineure"},
+{s:"11. Rétroviseurs et vitrage", t:"Rétroviseur extérieur requis par le Code manquant, endommagé ou ne peut être ajusté et demeurer à la position choisie", c:"11.2", a:"mineure"},
+{s:"11. Rétroviseurs et vitrage", t:"Rétroviseur extérieur mal fixé ou présente une arête vive", c:"11.3", a:"mineure"},
+
+// 12. ROUES, MOYEUX ET PIÈCES DE FIXATION
+{s:"12. Roues, moyeux et pièces de fixation", t:"Lubrifiant sous le niveau minimal ou fuite de lubrifiant du roulement de roue autre qu'un suintement", c:"12.1", a:"mineure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Support ou le montage fixant la roue de secours est non solidement fixé pour la maintenir", c:"12.2", a:"mineure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Lubrifiant du roulement de roue qui est absent ou qui n'est pas visible par une fenêtre d'inspection", c:"12.A", a:"majeure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Pièce de fixation manquante, fissurée, cassée ou mal fixée", c:"12.B", a:"majeure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Roue endommagée ou porte une marque de réparation par soudage", c:"12.C", a:"majeure"},
+
+// 13. SIÈGE
+{s:"13. Siège", t:"Siège du conducteur inadéquat ou ne demeure pas dans la position choisie", c:"13.1", a:"mineure"},
+{s:"13. Siège", t:"Ceinture de sécurité du siège du conducteur manquante, modifiée ou inadéquate", c:"13.A", a:"majeure"},
+
+// 14. SUSPENSION
+{s:"14. Suspension", t:"Lame de ressort autre qu'une lame maîtresse ou ressort hélicoïdal cassé", c:"14.1", a:"mineure"},
+{s:"14. Suspension", t:"Fuite d'air dans la suspension, ballon endommagé au point d'exposer la toile ou réparé", c:"14.2", a:"mineure"},
+{s:"14. Suspension", t:"Lame maîtresse, coussin de caoutchouc ou 25 % et plus des lames d'un ressort de l'assemblage cassés ou manquants", c:"14.A", a:"majeure"},
+{s:"14. Suspension", t:"Fuite d'air dans le système non compensée par le compresseur ou ballon absent ou dégonflé", c:"14.B", a:"majeure"},
+{s:"14. Suspension", t:"Élément de fixation de l'essieu manquant, mal fixé, fissuré ou cassé", c:"14.C", a:"majeure"},
+{s:"14. Suspension", t:"Lame en composite fissurée sur plus de 75 % de sa longueur ou comporte une intersection de fissures", c:"14.D", a:"majeure"},
+{s:"14. Suspension", t:"Lame de ressort ou ressort hélicoïdal déplacé vient en contact avec une pièce en mouvement", c:"14.E", a:"majeure"},
+{s:"14. Suspension", t:"Ressort hélicoïdal cassé au point que le véhicule est affaissé complètement ou barre de torsion cassée", c:"14.F", a:"majeure"},
+{s:"14. Suspension", t:"Essieu cassé ou élément de localisation de l'essieu ou de la roue manquant, mal fixé, fissuré, cassé ou endommagé affectant le parallélisme ou causant le déplacement d'un essieu ou d'une roue par rapport à sa position", c:"14.G", a:"majeure"},
+
+// 15. SYSTÈME D'ALIMENTATION EN CARBURANT
+{s:"15. Système d'alimentation en carburant", t:"Réservoir mal fixé et il y a risque de séparation", c:"15.A", a:"majeure"},
+{s:"15. Système d'alimentation en carburant", t:"Bouchon absent", c:"15.B", a:"majeure"},
+{s:"15. Système d'alimentation en carburant", t:"Fuite de carburant autre qu'un suintement", c:"15.C", a:"majeure"},
+
+// 16. SYSTÈME D'ÉCHAPPEMENT
+{s:"16. Système d'échappement", t:"Fuite de gaz d'échappement ailleurs qu'aux endroits prévus lors de la fabrication", c:"16.1", a:"mineure"},
+{s:"16. Système d'échappement", t:"Fuite de gaz d'échappement qui s'infiltre dans l'habitacle lorsque le plancher est perforé", c:"16.A", a:"majeure"},
+
+// 17. SYSTÈME DE FREINS ÉLECTRIQUES
+{s:"17. Système de freins électriques", t:"Raccord ou câble électrique mal fixé à un point d'attache ou de connexion", c:"17.1", a:"mineure"},
+{s:"17. Système de freins électriques", t:"Réduction importante de la capacité de freinage du frein de service", c:"17.A", a:"majeure"},
+
+// 18. SYSTÈME DE FREINS HYDRAULIQUES
+{s:"18. Système de freins hydrauliques", t:"Niveau de liquide dans le réservoir du maître-cylindre est sous le niveau minimal requis", c:"18.1", a:"mineure"},
+{s:"18. Système de freins hydrauliques", t:"Pédale de frein descend au plancher", c:"18.2", a:"mineure"},
+{s:"18. Système de freins hydrauliques", t:"Témoin lumineux allumé pendant que le moteur est en marche ou ne s'allume pas lorsque la clé de contact est à la position « marche » ou « démarrage »", c:"18.3", a:"mineure"},
+{s:"18. Système de freins hydrauliques", t:"Témoin lumineux ne s'allume pas lorsque le frein de stationnement est serré ou ne s'éteint pas lorsqu'il est desserré", c:"18.4", a:"mineure"},
+{s:"18. Système de freins hydrauliques", t:"Frein de stationnement ne fonctionne pas correctement", c:"18.5", a:"mineure"},
+{s:"18. Système de freins hydrauliques", t:"Niveau du liquide dans le réservoir du maître-cylindre inférieur au quart du niveau maximal indiqué par le fabricant", c:"18.A", a:"majeure"},
+{s:"18. Système de freins hydrauliques", t:"Pédale de frein descend au plancher en moins de 10 secondes ou il faut appuyer à plusieurs reprises avant d'avoir une pression", c:"18.B", a:"majeure"},
+{s:"18. Système de freins hydrauliques", t:"Freins assistés ou servofrein non fonctionnels", c:"18.C", a:"majeure"},
+{s:"18. Système de freins hydrauliques", t:"Réduction importante de la capacité de freinage du frein de service", c:"18.D", a:"majeure"},
+
+// 19. SYSTÈME DE FREINS PNEUMATIQUES
+{s:"19. Système de freins pneumatiques", t:"Avertisseur sonore de basse pression ne fonctionne pas correctement", c:"19.1", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Les avertisseurs lumineux et visuels de basse pression ne fonctionnent pas correctement", c:"19.2", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Régulateur de pression ne fonctionne pas correctement", c:"19.3", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Fuite d'air audible ou dont le taux en une minute dépasse 20 kPa (3 lb/po²) pour un véhicule d'une seule unité, 28 kPa (4 lb/po²) pour un véhicule de deux unités et 35 kPa (5 lb/po²) pour un véhicule de trois unités", c:"19.4", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Frein de stationnement ou d'urgence ne fonctionne pas correctement", c:"19.5", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Aucun avertisseur sonore, lumineux et visuel de basse pression ne fonctionne", c:"19.A", a:"majeure"},
+{s:"19. Système de freins pneumatiques", t:"Compresseur d'air ne fonctionne pas correctement", c:"19.B", a:"majeure"},
+{s:"19. Système de freins pneumatiques", t:"Fuite d'air dont le taux en une minute dépasse 40 kPa (6 lb/po²) pour un véhicule d'une seule unité, 48 kPa (7 lb/po²) pour un véhicule de deux unités et 62 kPa (9 lb/po²) pour un véhicule de trois unités", c:"19.C", a:"majeure"},
+{s:"19. Système de freins pneumatiques", t:"Réduction importante de la capacité de freinage du frein de service", c:"19.D", a:"majeure"},
+
+
+], // fin liste 1
+
+// ─────────────────────────────────────────
+// LISTE 2 – Autobus
+// ─────────────────────────────────────────
+"2": [
+
+// 1. ATTELAGE
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.C et 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Élément(s) de fixation du dispositif d'attelage manquant(s), cassé(s) ou desserré(s)", c:"1.1", a:"mineure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.C et 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Attache de sûreté ou raccord manquant, détérioré ou mal fixé", c:"1.2", a:"mineure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.C et 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Plus de 20 % des éléments de fixation du mécanisme d'attelage endommagés ou manquants (véhicules accouplés)", c:"1.C", a:"majeure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.C et 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Élément du mécanisme d'attelage manquant, mal fixé, mal ajusté ou endommagé au point qu'il y a risque de rupture ou de séparation (véhicules accouplés)", c:"1.F", a:"majeure"},
+
+// 2. CHÂSSIS ET CARROSSERIE
+{s:"2. Châssis et carrosserie", t:"Longeron fissuré ou traverse fissurée ou cassée", c:"2.1", a:"mineure"},
+{s:"2. Châssis et carrosserie", t:"Élément fixe de la carrosserie absent ou mal fixé", c:"2.2", a:"mineure"},
+{s:"2. Châssis et carrosserie", t:"Porte extérieure d'un compartiment à bagages ou d'un compartiment auxiliaire inadéquate ou mal fixée au véhicule routier", c:"2.3", a:"mineure"},
+{s:"2. Châssis et carrosserie", t:"Longeron risque de casser", c:"2.A", a:"majeure"},
+{s:"2. Châssis et carrosserie", t:"Longeron ou traverse affaissé et qui provoque le contact d'une pièce mobile avec la carrosserie", c:"2.B", a:"majeure"},
+
+// 3. CHAUFFAGE ET DÉGIVRAGE
+{s:"3. Chauffage et dégivrage", t:"Soufflerie du pare-brise ne fonctionne pas", c:"3.1", a:"mineure"},
+
+// 4. COMMANDES DU CONDUCTEUR
+{s:"4. Commandes du conducteur", t:"Accélérateur ou embrayage ne fonctionnent pas correctement", c:"4.1", a:"mineure"},
+{s:"4. Commandes du conducteur", t:"Klaxon ne fonctionne pas correctement", c:"4.2", a:"mineure"},
+{s:"4. Commandes du conducteur", t:"Moteur ne revient pas au ralenti après le relâchement de l'accélérateur", c:"4.A", a:"majeure"},
+
+// 5. DIRECTION
+{s:"5. Direction", t:"Colonne de direction se déplace par rapport à sa position normale ou volant ajustable ne demeure pas à la position choisie", c:"5.1", a:"mineure"},
+{s:"5. Direction", t:"Niveau de liquide de la servodirection n'est pas celui prescrit par le fabricant", c:"5.2", a:"mineure"},
+{s:"5. Direction", t:"Courroie de la pompe présente une coupure", c:"5.3", a:"mineure"},
+{s:"5. Direction", t:"Colonne de direction ou volant se déplace par rapport à leur position normale alors qu'il y a un risque de séparation", c:"5.A", a:"majeure"},
+{s:"5. Direction", t:"Servodirection ne fonctionne pas", c:"5.B", a:"majeure"},
+
+// 6. ESSUIE-GLACES ET LAVE-GLACE
+{s:"6. Essuie-glaces et lave-glace", t:"Essuie-glace du côté passager manquant ou inadéquat", c:"6.1", a:"mineure"},
+{s:"6. Essuie-glaces et lave-glace", t:"Système de lave-glace inefficace", c:"6.2", a:"mineure"},
+{s:"6. Essuie-glaces et lave-glace", t:"Essuie-glace du côté conducteur manquant ou inadéquat", c:"6.A", a:"majeure"},
+
+// 7. MATÉRIEL D'URGENCE
+{s:"7. Matériel d'urgence", t:"Trousse de premiers soins requise par la Loi mal fixée ou difficilement accessible", c:"7.1", a:"mineure"},
+{s:"7. Matériel d'urgence", t:"Extincteur chimique requis par la Loi mal fixé, inadéquat ou difficilement accessible", c:"7.2", a:"mineure"},
+{s:"7. Matériel d'urgence", t:"Présence de moins de trois fusées éclairantes, moins de trois réflecteurs triangulaires ou moins de trois lampes", c:"Art. 432 CSR", a:"infraction"},
+
+// 8. PHARES ET FEUX
+{s:"8. Phares et feux", t:"Phare de croisement, feu de position, feu de changement de direction, feu de freinage ou feu de la plaque d'immatriculation qui ne s'allume pas", c:"8.1", a:"mineure"},
+{s:"8. Phares et feux", t:"Aucun phare de croisement ne s'allume", c:"8.A", a:"majeure"},
+{s:"8. Phares et feux", t:"À l'arrière d'un véhicule d'une seule unité ou du dernier véhicule d'un ensemble de véhicules : aucun feu de changement de direction, situé du côté droit ou gauche, ne s'allume", c:"8.B", a:"majeure"},
+{s:"8. Phares et feux", t:"À l'arrière d'un véhicule d'une seule unité ou du dernier véhicule d'un ensemble de véhicules : aucun feu de freinage ne s'allume", c:"8.B", a:"majeure"},
+{s:"8. Phares et feux", t:"À l'arrière d'un véhicule d'une seule unité ou du dernier véhicule d'un ensemble de véhicules : aucun des feux de position ne s'allume", c:"8.B", a:"majeure"},
+
+// 9. PNEUS
+{s:"9. Pneus", t:"Indicateur d'usure d'un pneu touche la chaussée ou profondeur d'une rainure est égale ou inférieure à l'indicateur d'usure", c:"9.1", a:"mineure"},
+{s:"9. Pneus", t:"Un pneu, d'un même assemblage de roues, présente une matière étrangère logée dans la bande de roulement ou dans le flanc et qui peut causer une crevaison", c:"9.2", a:"mineure"},
+{s:"9. Pneus", t:"Un pneu, d'un même assemblage de roues, endommagé au point de voir la toile de renforcement ou la ceinture d'acier", c:"9.3", a:"mineure"},
+{s:"9. Pneus", t:"Pneu déformé, bande de roulement ou flanc séparé de la carcasse du pneu", c:"9.4", a:"mineure"},
+{s:"9. Pneus", t:"Valve usée, endommagée, écorchée ou coupée", c:"9.5", a:"mineure"},
+{s:"9. Pneus", t:"Pour un pneu installé sur l'essieu relié à la direction d'un véhicule motorisé ayant un PNBV de 4 500 kg ou plus, la profondeur de deux rainures adjacentes est égale ou inférieure à l'indicateur d'usure", c:"9.A", a:"majeure"},
+{s:"9. Pneus", t:"Pneu simple ou les pneus jumelés du même assemblage de roues présentent une matière étrangère logée dans la bande de roulement ou le flanc et qui peut causer une crevaison", c:"9.B", a:"majeure"},
+{s:"9. Pneus", t:"Pneu simple ou les pneus jumelés du même assemblage de roues endommagés au point de voir la toile de renforcement ou la ceinture d'acier", c:"9.C", a:"majeure"},
+{s:"9. Pneus", t:"Pneu en contact avec une partie fixe du véhicule, qui est à plat ou présente une fuite d'air ou un renflement", c:"9.D", a:"majeure"},
+
+// 10. PORTIÈRES ET AUTRES ISSUES
+{s:"10. Portières et autres issues", t:"Portière du conducteur s'ouvre avec difficulté ou ne s'ouvre pas", c:"10.1", a:"mineure"},
+{s:"10. Portières et autres issues", t:"Portière de l'habitacle ne se ferme pas de façon sécuritaire", c:"10.A", a:"majeure"},
+{s:"10. Portières et autres issues", t:"Sortie de secours obstruée", c:"10.B", a:"majeure"},
+{s:"10. Portières et autres issues", t:"Porte de secours inadéquate ou son avertisseur sonore ou lumineux n'est pas en bon état de fonctionnement", c:"10.C", a:"majeure"},
+
+// 11. RÉTROVISEURS ET VITRAGE
+{s:"11. Rétroviseurs et vitrage", t:"Pare-brise ou vitre latérale située d'un côté ou de l'autre du poste de conduite n'offrent pas la visibilité requise au conducteur parce que endommagés", c:"11.1", a:"mineure"},
+{s:"11. Rétroviseurs et vitrage", t:"Rétroviseur extérieur requis par le Code manquant, endommagé ou ne peut être ajusté et demeurer à la position choisie", c:"11.2", a:"mineure"},
+{s:"11. Rétroviseurs et vitrage", t:"Rétroviseur extérieur mal fixé ou présente une arête vive", c:"11.3", a:"mineure"},
+{s:"11. Rétroviseurs et vitrage", t:"Vitre latérale d'un autobus affecté au transport d'écoliers située de chaque côté et immédiatement derrière le poste de conduite n'offre pas la visibilité requise au conducteur parce que endommagée", c:"11.4", a:"mineure"},
+
+// 12. ROUES, MOYEUX ET PIÈCES DE FIXATION
+{s:"12. Roues, moyeux et pièces de fixation", t:"Lubrifiant sous le niveau minimal ou fuite de lubrifiant du roulement de roue autre qu'un suintement", c:"12.1", a:"mineure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Support ou le montage fixant la roue de secours est non solidement fixé pour la maintenir", c:"12.2", a:"mineure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Lubrifiant du roulement de roue qui est absent ou qui n'est pas visible par une fenêtre d'inspection", c:"12.A", a:"majeure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Pièce de fixation manquante, fissurée, cassée ou mal fixée", c:"12.B", a:"majeure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Roue endommagée ou porte une marque de réparation par soudage", c:"12.C", a:"majeure"},
+
+// 13. SIÈGE
+{s:"13. Siège", t:"Siège du conducteur inadéquat ou ne demeure pas dans la position choisie", c:"13.1", a:"mineure"},
+{s:"13. Siège", t:"Ceinture de sécurité du siège du conducteur manquante, modifiée ou inadéquate", c:"13.A", a:"majeure"},
+
+// 14. SUSPENSION
+{s:"14. Suspension", t:"Lame de ressort autre qu'une lame maîtresse ou ressort hélicoïdal cassé", c:"14.1", a:"mineure"},
+{s:"14. Suspension", t:"Fuite d'air dans la suspension, ballon endommagé au point d'exposer la toile ou réparé", c:"14.2", a:"mineure"},
+{s:"14. Suspension", t:"Lame maîtresse, coussin de caoutchouc ou 25 % et plus des lames d'un ressort de l'assemblage cassés ou manquants", c:"14.A", a:"majeure"},
+{s:"14. Suspension", t:"Fuite d'air dans le système non compensée par le compresseur ou ballon absent ou dégonflé", c:"14.B", a:"majeure"},
+{s:"14. Suspension", t:"Élément de fixation de l'essieu manquant, mal fixé, fissuré ou cassé", c:"14.C", a:"majeure"},
+{s:"14. Suspension", t:"Lame en composite fissurée sur plus de 75 % de sa longueur ou comporte une intersection de fissures", c:"14.D", a:"majeure"},
+{s:"14. Suspension", t:"Lame de ressort ou ressort hélicoïdal déplacé vient en contact avec une pièce en mouvement", c:"14.E", a:"majeure"},
+{s:"14. Suspension", t:"Ressort hélicoïdal cassé au point que le véhicule est affaissé complètement ou barre de torsion cassée", c:"14.F", a:"majeure"},
+{s:"14. Suspension", t:"Essieu cassé ou élément de localisation de l'essieu ou de la roue manquant, mal fixé, fissuré, cassé ou endommagé affectant le parallélisme ou causant le déplacement d'un essieu ou d'une roue par rapport à sa position", c:"14.G", a:"majeure"},
+
+// 15. SYSTÈME D'ALIMENTATION EN CARBURANT
+{s:"15. Système d'alimentation en carburant", t:"Réservoir mal fixé et il y a risque de séparation", c:"15.A", a:"majeure"},
+{s:"15. Système d'alimentation en carburant", t:"Bouchon absent", c:"15.B", a:"majeure"},
+{s:"15. Système d'alimentation en carburant", t:"Fuite de carburant autre qu'un suintement", c:"15.C", a:"majeure"},
+
+// 16. SYSTÈME D'ÉCHAPPEMENT
+{s:"16. Système d'échappement", t:"Fuite de gaz d'échappement ailleurs qu'aux endroits prévus lors de la fabrication", c:"16.1", a:"mineure"},
+{s:"16. Système d'échappement", t:"Fuite de gaz d'échappement qui s'infiltre dans l'habitacle lorsque le plancher est perforé", c:"16.A", a:"majeure"},
+
+// 17. SYSTÈME DE FREINS ÉLECTRIQUES
+{s:"17. Système de freins électriques", t:"Raccord ou câble électrique mal fixé à un point d'attache ou de connexion", c:"17.1", a:"mineure"},
+{s:"17. Système de freins électriques", t:"Réduction importante de la capacité de freinage du frein de service", c:"17.A", a:"majeure"},
+
+// 18. SYSTÈME DE FREINS HYDRAULIQUES
+{s:"18. Système de freins hydrauliques", t:"Niveau de liquide dans le réservoir du maître-cylindre est sous le niveau minimal requis", c:"18.1", a:"mineure"},
+{s:"18. Système de freins hydrauliques", t:"Pédale de frein descend au plancher", c:"18.2", a:"mineure"},
+{s:"18. Système de freins hydrauliques", t:"Témoin lumineux allumé pendant que le moteur est en marche ou ne s'allume pas lorsque la clé de contact est à la position « marche » ou « démarrage »", c:"18.3", a:"mineure"},
+{s:"18. Système de freins hydrauliques", t:"Témoin lumineux ne s'allume pas lorsque le frein de stationnement est serré ou ne s'éteint pas lorsqu'il est desserré", c:"18.4", a:"mineure"},
+{s:"18. Système de freins hydrauliques", t:"Frein de stationnement ne fonctionne pas correctement", c:"18.5", a:"mineure"},
+{s:"18. Système de freins hydrauliques", t:"Niveau du liquide dans le réservoir du maître-cylindre inférieur au quart du niveau maximal indiqué par le fabricant", c:"18.A", a:"majeure"},
+{s:"18. Système de freins hydrauliques", t:"Pédale de frein descend au plancher en moins de 10 secondes ou il faut appuyer à plusieurs reprises avant d'avoir une pression", c:"18.B", a:"majeure"},
+{s:"18. Système de freins hydrauliques", t:"Freins assistés ou servofrein non fonctionnels", c:"18.C", a:"majeure"},
+{s:"18. Système de freins hydrauliques", t:"Réduction importante de la capacité de freinage du frein de service", c:"18.D", a:"majeure"},
+
+// 19. SYSTÈME DE FREINS PNEUMATIQUES
+{s:"19. Système de freins pneumatiques", t:"Avertisseur sonore de basse pression ne fonctionne pas correctement", c:"19.1", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Les avertisseurs lumineux et visuels de basse pression ne fonctionnent pas correctement", c:"19.2", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Régulateur de pression ne fonctionne pas correctement", c:"19.3", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Fuite d'air audible ou dont le taux en une minute dépasse 20 kPa (3 lb/po²) pour un véhicule d'une seule unité, 28 kPa (4 lb/po²) pour un véhicule de deux unités et 35 kPa (5 lb/po²) pour un véhicule de trois unités", c:"19.4", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Frein de stationnement ou d'urgence ne fonctionne pas correctement", c:"19.5", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Aucun avertisseur sonore, lumineux et visuel de basse pression ne fonctionne", c:"19.A", a:"majeure"},
+{s:"19. Système de freins pneumatiques", t:"Compresseur d'air ne fonctionne pas correctement", c:"19.B", a:"majeure"},
+{s:"19. Système de freins pneumatiques", t:"Fuite d'air dont le taux en une minute dépasse 40 kPa (6 lb/po²) pour un véhicule d'une seule unité, 48 kPa (7 lb/po²) pour un véhicule de deux unités et 62 kPa (9 lb/po²) pour un véhicule de trois unités", c:"19.C", a:"majeure"},
+{s:"19. Système de freins pneumatiques", t:"Réduction importante de la capacité de freinage du frein de service", c:"19.D", a:"majeure"},
+
+// 20. TRANSPORT DE PASSAGERS
+{s:"20. Transport de passagers", t:"Tige verticale, barre horizontale, poignée d'appui ou panneau protecteur mal fixé", c:"20.1", a:"mineure"},
+{s:"20. Transport de passagers", t:"Matériau d'absorption de chocs prévu par le fabricant sur les tiges verticales absent ou inadéquat", c:"20.2", a:"mineure"},
+{s:"20. Transport de passagers", t:"Plancher ou marche de l'habitacle endommagé", c:"20.3", a:"mineure"},
+{s:"20. Transport de passagers", t:"Éclairage d'accès des passagers ou de l'allée ne fonctionne pas", c:"20.4", a:"mineure"},
+{s:"20. Transport de passagers", t:"Porte-bagages supérieur ou compartiment à bagages supérieur mal fixé ou ne peut retenir les bagages", c:"20.5", a:"mineure"},
+{s:"20. Transport de passagers", t:"Siège ou banquette des passagers inadéquat", c:"20.6", a:"mineure"},
+{s:"20. Transport de passagers", t:"Panneau d'arrêt ne fonctionne pas correctement ou l'un de ses feux clignotants ne s'allume pas", c:"20.7", a:"mineure"},
+{s:"20. Transport de passagers", t:"L'un des feux intermittents ou l'un ou des feux jaunes d'avertissement alternatif d'un autobus scolaire ne s'allume pas", c:"20.8", a:"mineure"},
+
+], // fin liste 2
+
+// ─────────────────────────────────────────
+// LISTE 3 – Autocars
+// ─────────────────────────────────────────
+"3": [
+
+// 1. ATTELAGE
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.C et 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Élément(s) de fixation du dispositif d'attelage manquant(s), cassé(s) ou desserré(s)", c:"1.1", a:"mineure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.C et 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Attache de sûreté ou raccord manquant, détérioré ou mal fixé", c:"1.2", a:"mineure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.C et 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Plus de 20 % des éléments de fixation du mécanisme d'attelage endommagés ou manquants (véhicules accouplés)", c:"1.C", a:"majeure"},
+{s:"1. Attelage", note:"Les défectuosités prévues aux points 1.C et 1.F s'appliquent lorsque les véhicules sont accouplés.",
+ t:"Élément du mécanisme d'attelage manquant, mal fixé, mal ajusté ou endommagé au point qu'il y a risque de rupture ou de séparation (véhicules accouplés)", c:"1.F", a:"majeure"},
+
+// 2. CHÂSSIS ET CARROSSERIE
+{s:"2. Châssis et carrosserie", t:"Élément fixe de la carrosserie absent ou mal fixé", c:"2.2", a:"mineure"},
+{s:"2. Châssis et carrosserie", t:"Porte extérieure d'un compartiment à bagages ou d'un compartiment auxiliaire inadéquate ou mal fixée au véhicule routier", c:"2.3", a:"mineure"},
+
+// 3. CHAUFFAGE ET DÉGIVRAGE
+{s:"3. Chauffage et dégivrage", t:"Soufflerie du pare-brise ne fonctionne pas", c:"3.1", a:"mineure"},
+
+// 4. COMMANDES DU CONDUCTEUR
+{s:"4. Commandes du conducteur", t:"Accélérateur ou embrayage ne fonctionne pas correctement", c:"4.1", a:"mineure"},
+{s:"4. Commandes du conducteur", t:"Klaxon ne fonctionne pas correctement", c:"4.2", a:"mineure"},
+{s:"4. Commandes du conducteur", t:"Moteur ne revient pas au ralenti après le relâchement de l'accélérateur", c:"4.A", a:"majeure"},
+
+// 5. DIRECTION
+{s:"5. Direction", t:"Colonne de direction se déplace par rapport à sa position normale ou volant ajustable ne demeure pas à la position choisie", c:"5.1", a:"mineure"},
+{s:"5. Direction", t:"Niveau de liquide de la servodirection n'est pas celui prescrit par le fabricant", c:"5.2", a:"mineure"},
+{s:"5. Direction", t:"Courroie de la pompe présente une coupure", c:"5.3", a:"mineure"},
+{s:"5. Direction", t:"Colonne de direction ou volant se déplace par rapport à leur position normale alors qu'il y a un risque de séparation", c:"5.A", a:"majeure"},
+{s:"5. Direction", t:"Servodirection ne fonctionne pas", c:"5.B", a:"majeure"},
+
+// 6. ESSUIE-GLACES ET LAVE-GLACE
+{s:"6. Essuie-glaces et lave-glace", t:"Essuie-glace du côté passager manquant ou inadéquat", c:"6.1", a:"mineure"},
+{s:"6. Essuie-glaces et lave-glace", t:"Système de lave-glace inefficace", c:"6.2", a:"mineure"},
+{s:"6. Essuie-glaces et lave-glace", t:"Essuie-glace du côté conducteur manquant ou inadéquat", c:"6.A", a:"majeure"},
+
+// 7. MATÉRIEL D'URGENCE
+{s:"7. Matériel d'urgence", t:"Trousse de premiers soins requise par la Loi mal fixée ou difficilement accessible", c:"7.1", a:"mineure"},
+{s:"7. Matériel d'urgence", t:"Extincteur chimique requis par la Loi mal fixé, inadéquat ou difficilement accessible", c:"7.2", a:"mineure"},
+{s:"7. Matériel d'urgence", t:"Présence de moins de trois fusées éclairantes, moins de trois réflecteurs triangulaires ou moins de trois lampes", c:"Art. 432 CSR", a:"infraction"},
+
+// 8. PHARES ET FEUX
+{s:"8. Phares et feux", t:"Phare de croisement, feu de position, feu de changement de direction, feu de freinage ou feu de la plaque d'immatriculation qui ne s'allume pas", c:"8.1", a:"mineure"},
+{s:"8. Phares et feux", t:"Aucun phare de croisement ne s'allume", c:"8.A", a:"majeure"},
+{s:"8. Phares et feux", t:"À l'arrière d'un véhicule d'une seule unité ou du dernier véhicule d'un ensemble de véhicules : aucun feu de changement de direction, situé du côté droit ou gauche, ne s'allume", c:"8.B", a:"majeure"},
+{s:"8. Phares et feux", t:"À l'arrière d'un véhicule d'une seule unité ou du dernier véhicule d'un ensemble de véhicules : aucun feu de freinage ne s'allume", c:"8.B", a:"majeure"},
+{s:"8. Phares et feux", t:"À l'arrière d'un véhicule d'une seule unité ou du dernier véhicule d'un ensemble de véhicules : aucun des feux de position ne s'allume", c:"8.B", a:"majeure"},
+
+// 9. PNEUS
+{s:"9. Pneus", t:"Indicateur d'usure d'un pneu touche la chaussée ou profondeur d'une rainure est égale ou inférieure à l'indicateur d'usure", c:"9.1", a:"mineure"},
+{s:"9. Pneus", t:"Un pneu, d'un même assemblage de roues, présente une matière étrangère logée dans la bande de roulement ou dans le flanc et qui peut causer une crevaison", c:"9.2", a:"mineure"},
+{s:"9. Pneus", t:"Un pneu, d'un même assemblage de roues, endommagé au point de voir la toile de renforcement ou la ceinture d'acier", c:"9.3", a:"mineure"},
+{s:"9. Pneus", t:"Pneu déformé, bande de roulement ou flanc séparé de la carcasse du pneu", c:"9.4", a:"mineure"},
+{s:"9. Pneus", t:"Valve usée, endommagée, écorchée ou coupée", c:"9.5", a:"mineure"},
+{s:"9. Pneus", t:"Pour un pneu installé sur l'essieu relié à la direction d'un véhicule motorisé ayant un PNBV de 4 500 kg ou plus, la profondeur de deux rainures adjacentes est égale ou inférieure à l'indicateur d'usure", c:"9.A", a:"majeure"},
+{s:"9. Pneus", t:"Pneu simple ou les pneus jumelés du même assemblage de roues présentent une matière étrangère logée dans la bande de roulement ou le flanc et qui peut causer une crevaison", c:"9.B", a:"majeure"},
+{s:"9. Pneus", t:"Pneu simple ou les pneus jumelés du même assemblage de roues endommagés au point de voir la toile de renforcement ou la ceinture d'acier", c:"9.C", a:"majeure"},
+{s:"9. Pneus", t:"Pneu en contact avec une partie fixe du véhicule, qui est à plat ou présente une fuite d'air ou un renflement", c:"9.D", a:"majeure"},
+
+// 10. PORTIÈRES ET AUTRES ISSUES
+{s:"10. Portières et autres issues", t:"Portière du conducteur s'ouvre avec difficulté ou ne s'ouvre pas", c:"10.1", a:"mineure"},
+{s:"10. Portières et autres issues", t:"Portière de l'habitacle ne se ferme pas de façon sécuritaire", c:"10.A", a:"majeure"},
+{s:"10. Portières et autres issues", t:"Sortie de secours obstruée", c:"10.B", a:"majeure"},
+
+// 11. RÉTROVISEURS ET VITRAGE
+{s:"11. Rétroviseurs et vitrage", t:"Pare-brise ou vitre latérale située d'un côté ou de l'autre du poste de conduite n'offre pas la visibilité requise au conducteur parce que endommagé", c:"11.1", a:"mineure"},
+{s:"11. Rétroviseurs et vitrage", t:"Rétroviseur extérieur requis par le Code manquant, endommagé ou ne peut être ajusté et demeurer à la position choisie", c:"11.2", a:"mineure"},
+{s:"11. Rétroviseurs et vitrage", t:"Rétroviseur extérieur mal fixé ou présente une arête vive", c:"11.3", a:"mineure"},
+
+// 12. ROUES, MOYEUX ET PIÈCES DE FIXATION
+{s:"12. Roues, moyeux et pièces de fixation", t:"Lubrifiant sous le niveau minimal ou fuite de lubrifiant du roulement de roue autre qu'un suintement", c:"12.1", a:"mineure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Support ou le montage fixant la roue de secours est non solidement fixé pour la maintenir", c:"12.2", a:"mineure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Lubrifiant du roulement de roue qui est absent ou qui n'est pas visible par une fenêtre d'inspection", c:"12.A", a:"majeure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Pièce de fixation manquante, fissurée, cassée ou mal fixée", c:"12.B", a:"majeure"},
+{s:"12. Roues, moyeux et pièces de fixation", t:"Roue endommagée ou porte une marque de réparation par soudage", c:"12.C", a:"majeure"},
+
+// 13. SIÈGE
+{s:"13. Siège", t:"Siège du conducteur inadéquat ou ne demeure pas dans la position choisie", c:"13.1", a:"mineure"},
+{s:"13. Siège", t:"Ceinture de sécurité du siège du conducteur manquante, modifiée ou inadéquate", c:"13.A", a:"majeure"},
+
+// 14. SUSPENSION
+{s:"14. Suspension", t:"Fuite d'air dans la suspension, ballon endommagé au point d'exposer la toile ou réparé", c:"14.2", a:"mineure"},
+{s:"14. Suspension", t:"Fuite d'air dans le système non compensée par le compresseur ou ballon absent ou dégonflé", c:"14.B", a:"majeure"},
+{s:"14. Suspension", t:"Essieu cassé ou élément de localisation de l'essieu ou de la roue manquant, mal fixé, fissuré, cassé ou endommagé affectant le parallélisme ou causant le déplacement d'un essieu ou d'une roue par rapport à sa position", c:"14.G", a:"majeure"},
+
+// 15. SYSTÈME D'ALIMENTATION EN CARBURANT
+{s:"15. Système d'alimentation en carburant", t:"Réservoir mal fixé et il y a risque de séparation", c:"15.A", a:"majeure"},
+{s:"15. Système d'alimentation en carburant", t:"Bouchon absent", c:"15.B", a:"majeure"},
+{s:"15. Système d'alimentation en carburant", t:"Fuite de carburant autre qu'un suintement", c:"15.C", a:"majeure"},
+
+// 16. SYSTÈME D'ÉCHAPPEMENT
+{s:"16. Système d'échappement", t:"Fuite de gaz d'échappement ailleurs qu'aux endroits prévus lors de la fabrication", c:"16.1", a:"mineure"},
+{s:"16. Système d'échappement", t:"Fuite de gaz d'échappement qui s'infiltre dans l'habitacle lorsque le plancher est perforé", c:"16.A", a:"majeure"},
+
+// 17 et 18 : non visés pour l'autocar
+
+// 19. SYSTÈME DE FREINS PNEUMATIQUES
+{s:"19. Système de freins pneumatiques", t:"Avertisseur sonore de basse pression ne fonctionne pas correctement", c:"19.1", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Les avertisseurs lumineux et visuels de basse pression ne fonctionnent pas correctement", c:"19.2", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Régulateur de pression ne fonctionne pas correctement", c:"19.3", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Fuite d'air audible ou dont le taux en une minute dépasse 20 kPa (3 lb/po²) pour un véhicule d'une seule unité, 28 kPa (4 lb/po²) pour un véhicule de deux unités et 35 kPa (5 lb/po²) pour un véhicule de trois unités", c:"19.4", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Frein de stationnement ou d'urgence ne fonctionnent pas correctement", c:"19.5", a:"mineure"},
+{s:"19. Système de freins pneumatiques", t:"Aucun avertisseur sonore, lumineux et visuel de basse pression ne fonctionne", c:"19.A", a:"majeure"},
+{s:"19. Système de freins pneumatiques", t:"Compresseur d'air ne fonctionne pas correctement", c:"19.B", a:"majeure"},
+{s:"19. Système de freins pneumatiques", t:"Fuite d'air dont le taux en une minute dépasse 40 kPa (6 lb/po²) pour un véhicule d'une seule unité, 48 kPa (7 lb/po²) pour un véhicule de deux unités et 62 kPa (9 lb/po²) pour un véhicule de trois unités", c:"19.C", a:"majeure"},
+{s:"19. Système de freins pneumatiques", t:"Réduction importante de la capacité de freinage du frein de service", c:"19.D", a:"majeure"},
+
+// 20. TRANSPORT DE PASSAGERS
+{s:"20. Transport de passagers", t:"Tige verticale, barre horizontale, poignée d'appui ou panneau protecteur mal fixé", c:"20.1", a:"mineure"},
+{s:"20. Transport de passagers", t:"Matériau d'absorption de chocs prévu par le fabricant sur les tiges verticales absent ou inadéquat", c:"20.2", a:"mineure"},
+{s:"20. Transport de passagers", t:"Plancher ou marche de l'habitacle endommagé", c:"20.3", a:"mineure"},
+{s:"20. Transport de passagers", t:"Éclairage d'accès des passagers ou de l'allée ne fonctionne pas", c:"20.4", a:"mineure"},
+{s:"20. Transport de passagers", t:"Porte-bagages supérieur ou compartiment à bagages supérieur mal fixé ou ne peut retenir les bagages", c:"20.5", a:"mineure"},
+{s:"20. Transport de passagers", t:"Siège ou banquette des passagers inadéquat", c:"20.6", a:"mineure"},
+
+] // fin liste 3
+
+}; // fin DB
+
+// ═══════════════════════════════════════════════════════════
+//  LOGIQUE DU QUIZ
+// ═══════════════════════════════════════════════════════════
+let currentListe = "1";
+let currentSection = "all";
+let questions = [];
+let idx = 0, correct = 0, wrong = 0;
+let answered = false;
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function getSections(liste) {
+  const seen = new Set();
+  return DB[liste].filter(q => {
+    if (seen.has(q.s)) return false;
+    seen.add(q.s);
+    return true;
+  }).map(q => q.s);
+}
+
+function buildSectionSelect() {
+  const sel = document.getElementById('selSection');
+  const sections = getSections(currentListe);
+  sel.innerHTML = '<option value="all">Toutes les sections</option>';
+  sections.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s; o.textContent = s;
+    sel.appendChild(o);
+  });
+  currentSection = "all";
+}
+
+function getFiltered() {
+  let q = DB[currentListe];
+  if (currentSection !== "all") q = q.filter(x => x.s === currentSection);
+  return shuffle([...q]);
+}
+
+function onListeChange() {
+  currentListe = document.getElementById('selListe').value;
+  buildSectionSelect();
+  restart();
+}
+
+function onSectionChange() {
+  currentSection = document.getElementById('selSection').value;
+  restart();
+}
+
+function restart() {
+  questions = getFiltered();
+  idx = 0; correct = 0; wrong = 0; answered = false;
+  document.getElementById('resultsCard').classList.remove('show');
+  document.getElementById('emptyState').classList.remove('show');
+  document.getElementById('qCard').style.display = '';
+  updateStats();
+  if (questions.length === 0) {
+    document.getElementById('qCard').style.display = 'none';
+    document.getElementById('emptyState').classList.add('show');
+  } else {
+    loadQuestion();
+  }
+}
+
+function loadQuestion() {
+  if (idx >= questions.length) { showResults(); return; }
+  answered = false;
+  const q = questions[idx];
+
+  document.getElementById('qSection').textContent = q.s;
+  document.getElementById('qNumCard').textContent = (idx + 1) + ' / ' + questions.length;
+
+  // Afficher le texte SANS le code de défectuosité
+  document.getElementById('qText').textContent = q.t;
+
+  // Réinitialiser boutons
+  const btnMap = {mineure:'btnMin', majeure:'btnMaj', /* mecanique:'btnMec', DÉSACTIVÉ */ infraction:'btnInf'};
+  Object.entries(btnMap).forEach(([cls, id]) => {
+    const b = document.getElementById(id);
+    b.className = 'ans-btn ' + cls;
+    b.disabled = false;
+  });
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('feedback').innerHTML = '';
+  document.getElementById('nextBtn').className = 'next-btn';
+  updateStats();
+}
+
+const LABELS = {
+  mineure:    'Défectuosité MINEURE',
+  majeure:    'Défectuosité MAJEURE',
+  mecanique:  'Défectuosité MÉCANIQUE',
+  infraction: 'INFRACTION'
+};
+
+function answer(choice) {
+  if (answered) return;
+  answered = true;
+  const q = questions[idx];
+  const isOk = choice === q.a;
+  if (isOk) correct++; else wrong++;
+
+  const btnMap = {mineure:'btnMin', majeure:'btnMaj', /* mecanique:'btnMec', DÉSACTIVÉ */ infraction:'btnInf'};
+  Object.entries(btnMap).forEach(([cls, id]) => {
+    const b = document.getElementById(id);
+    b.disabled = true;
+    if (cls === choice && isOk)  b.className = 'ans-btn correct';
+    else if (cls === choice)     b.className = 'ans-btn wrong';
+    else if (cls === q.a)        b.className = 'ans-btn reveal';
+    else                          b.className = 'ans-btn ' + cls;
+  });
+
+  const fb = document.getElementById('feedback');
+  // Afficher le code dans la rétroaction
+  const codeHtml = q.c ? `<span class="code-badge">${q.c}</span>` : '';
+
+  if (isOk) {
+    fb.className = 'feedback show ok';
+    fb.innerHTML = `✓ Bonne réponse ! ${codeHtml} ${LABELS[q.a]}.`;
+  } else {
+    fb.className = 'feedback show ko';
+    fb.innerHTML = `✗ Mauvaise réponse. La bonne réponse était : ${codeHtml} ${LABELS[q.a]}.`;
+  }
+  document.getElementById('nextBtn').className = 'next-btn show';
+  updateStats();
+}
+
+function nextQuestion() { idx++; loadQuestion(); }
+
+function updateStats() {
+  const total = Math.min(idx + (answered ? 1 : 0), questions.length);
+  document.getElementById('sNum').textContent = (idx + 1) + ' / ' + questions.length;
+  document.getElementById('sOk').textContent = correct;
+  document.getElementById('sKo').textContent = wrong;
+  document.getElementById('sPct').textContent = total > 0 ? Math.round(correct / total * 100) + '%' : '–';
+  document.getElementById('progBar').style.width = questions.length > 0 ? (idx / questions.length * 100) + '%' : '0%';
+}
+
+function showResults() {
+  document.getElementById('qCard').style.display = 'none';
+  const pct = Math.round(correct / questions.length * 100);
+  document.getElementById('rScore').textContent = pct + '%';
+  document.getElementById('rLabel').textContent = correct + ' bonnes réponses sur ' + questions.length;
+  const msg = pct >= 90 ? '🎯 Excellent ! Maîtrise parfaite.'
+    : pct >= 70 ? '👍 Bien ! Quelques points à revoir.'
+    : pct >= 50 ? '📖 Passable – révision recommandée.'
+    : '📚 À retravailler – plusieurs lacunes à corriger.';
+  document.getElementById('rMsg').textContent = msg;
+  document.getElementById('resultsCard').classList.add('show');
+}
+
+// INIT
+buildSectionSelect();
+restart();
+</script>
+</body>
+</html>
